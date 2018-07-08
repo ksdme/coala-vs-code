@@ -1,6 +1,7 @@
 "use strict";
 
 import * as net from "net";
+import { resolve, } from "path";
 
 import { Disposable, ExtensionContext, workspace } from "vscode";
 import {
@@ -13,6 +14,17 @@ import {
     SettingMonitor,
     TransportKind,
 } from "vscode-languageclient";
+
+const coalals = {
+    langs: [
+        "html",
+        "python",
+    ],
+
+    command: {
+        usage: resolve(__dirname, "../coalals/coala-ls.sh"),
+    },
+};
 
 function startLangServer(
     command: string,
@@ -65,11 +77,11 @@ function startLangServerTCP(
 export function activate(context: ExtensionContext) {
     context.subscriptions.push(
         startLangServer(
-            require("path").resolve(__dirname, "../coalals/coala-ls.sh"),
-            ["python"]
+            coalals.command.usage,
+            coalals.langs
         )
     );
     // For Debug
-    // context.subscriptions.push(startLangServerTCP(2087, ["python"]));
+    // context.subscriptions.push(startLangServerTCP(2087, coalals.langs));
     console.log("coala language server is running.");
 }
