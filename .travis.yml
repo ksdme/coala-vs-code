@@ -1,14 +1,11 @@
 sudo: false
-language: python
-python:
-  - 3.4
-  - 3.5
-  - 3.6
+language: node_js
+node_js:
+  "node"
 
 cache:
-  pip: true
   directories:
-    - node_modules
+    - "node_modules"
 
 os:
   #  # The macOS build in travis is really slow.
@@ -26,36 +23,20 @@ before_install:
       sleep 3;
     fi
 
-  - cd ./vscode-client
   - npm install
-  - mkdir ./out
-  - npm run vscode:prepublish
-  - cd - > /dev/null
 
-  - printf '%s\n'
-           "$(cat test-requirements.txt requirements.txt)"
-           > requirements.txt
-
-jobs:
-  include:
-    - python: 3.6
-      stage: moban
-      before_install: false
-      install: pip install moban
-      script: .ci/check_moban.sh
-      after_success: false
+# jobs:
+#   include:
+#     - python: 3.6
+#       stage: moban
+#       before_install: false
+#       install: pip install moban
+#       script: .ci/check_moban.sh
+#       after_success: false
 
 script:
-  - >
-  # https://github.com/coala/coala-bears/issues/1037
-  - sed -i.bak '/bears = GitCommitBear/d' .coafile
-  # Server side tests.
-  - coverage run $(which behave) ./tests/server.features
-  - coverage run -a -m unittest discover -s tests
-  # Frontend tests.
-#  - cd ./vscode-client
-#  - npm test
-#  - cd - > /dev/null
+  - npm run vscode:prepublish
+  - npm run test
 
 notifications:
   email: false
@@ -63,6 +44,6 @@ notifications:
   on_success: never
 
 after_success:
-  - codecov
+#  - codecov
 #  # If the build was triggered by a tag, publish the new version
 #  - 'if [[ $TRAVIS_TAG == v* ]]; then vsce publish -p $VSCE_TOKEN; fi'
