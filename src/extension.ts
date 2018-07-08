@@ -65,7 +65,7 @@ function startLangServerTCP(
 export function activate(context: ExtensionContext) {
     context.subscriptions.push(
         startLangServer(
-            require("path").resolve(__dirname, "../coala-langserver.sh"),
+            require("path").resolve(__dirname, "../coalals/coala-ls.sh"),
             ["python"]
         )
     );
